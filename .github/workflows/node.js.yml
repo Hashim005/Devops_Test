@@ -1,0 +1,35 @@
+name: Docker Build and Run Locally
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-run:
+    runs-on: self-hosted 
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Docker environment (if necessary)
+      - name: Ensure Docker is running
+        run: |
+          sudo systemctl start docker
+          sudo systemctl enable docker
+
+      # Step 3: Build Docker image
+      - name: Build Docker image
+        run: docker build -t node-server .
+
+      # Step 4: Stop and Remove Existing Container
+      - name: Stop Existing Container (if any)
+        run: |
+          docker stop node-server || true
+          docker rm node-server || true
+
+      # Step 5: Run Docker container
+      - name: Run Docker Container
+        run: docker run -d -p 3000:3000 node-server
