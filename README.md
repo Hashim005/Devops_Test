@@ -18,4 +18,5 @@ This project involves creating a Node.js server to handle two roles: Admin and E
     - docker run -p 3000:3000 my-node-app
    
     ### Deploye in this docker image into the AWS cloud. the working deployement you should following
+    hif
 
