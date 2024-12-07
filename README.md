@@ -9,4 +9,5 @@ This project involves creating a Node.js server to handle two roles: Admin and E
 
   # installation
   - Create a Docker File in my node server.
-  - 
+  - ![image](https://github.com/Hashim005/Devops_Test/blob/4f8f69ab40f0aae819f0e4d22080e458856671c7/docker-setup.png)
+
