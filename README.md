@@ -11,7 +11,9 @@ This project involves creating a Node.js server to handle two roles: Admin and E
   - Create a Docker File in my node server.
   - ![image](https://github.com/Hashim005/Devops_Test/blob/4f8f69ab40f0aae819f0e4d22080e458856671c7/docker-setup.png)
 
-    ### create Dockerization and running command
+    ### create Dockerization create and running command
     - docker build -t my-node-app .
     - docker run -p 3000:3000 my-node-app
+   
+    ### Deploye in this docker image into the AWS cloud. the working deployement you should following
 
