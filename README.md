@@ -13,5 +13,5 @@ This project involves creating a Node.js server to handle two roles: Admin and E
 
     ### create Dockerization and running command
     - docker build -t my-node-app .
-    - docker run -p 5000:5000 my-node-app
+    - docker run -p 3000:3000 my-node-app
 
