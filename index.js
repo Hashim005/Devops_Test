@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 })
 
 app.use('/server', (req, res) => {
-    res.send("Hello DevOps hashim ");
+    res.send("Hello DevOps ");
 })
 
 app.use(express.static('public'))
