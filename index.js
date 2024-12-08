@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 })
 
 app.use('/server', (req, res) => {
-    res.send("Hello World");
+    res.send("Hello World hashim");
 })
 
 app.use(express.static('public'))
