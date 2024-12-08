@@ -1,22 +1,161 @@
-# Project Title: Employee Feedback project in node.js server with Devops Testing
+# <ins>CI/CD Pipeline for Node.js Application with Docker, GitHub Actions, and AWS EC2</ins>
 
-This project involves creating a Node.js server to handle two roles: Admin and Employee. Employees can submit feedback to the Admin, while the Admin can assign tasks to individual Employees. Each Employee can view their assigned tasks and feedback. The Admin can manage tasks and view feedback. The backend will be containerized using Docker, creating a Docker image for deployment on AWS. A CI/CD pipeline will be implemented to automate the build, testing, and deployment process for seamless operations.
+This repository demonstrates the implementation of a **CI/CD pipeline** for a basic **Node.js application**, leveraging **Docker**, **GitHub Actions**, and **AWS EC2**. Below is a comprehensive guide.
 
-## Table of Content
+---
 
-- Web Server: Create a employee feedback web application using Node.js (Expres.Js).
-- Dockerization: Dockerize the web application to ensure consistency across different environments.
-- Deployment cloud platform : AWS.
-- CI/CD Implementation: Implement a Continuous Integration/Continuous Deployment (CI/CD) pipeline for the project. Use a CI/CD tool of your choice to automate the deployment process.
+## <ins>Table of Contents</ins>
 
-  # installation
-  - Create a Docker File in my node server.
-  - ![image](https://github.com/Hashim005/Devops_Test/blob/4f8f69ab40f0aae819f0e4d22080e458856671c7/docker-setup.png)
+1. [Overview](#overview)
+2. [Technologies Used](#technologies-used)
+3. [Process Summary](#process-summary)
+4. [Step-by-Step Implementation](#step-by-step-implementation)
+   - [Node.js Application Setup](#1-nodejs-application-setup)
+   - [Dockerize the Application](#2-dockerize-the-application)
+   - [Setup GitHub Actions Workflow](#3-setup-github-actions-workflow)
+   - [Configure AWS EC2 and Runner](#4-configure-aws-ec2-and-runner)
+   - [Automated Deployment](#5-automated-deployment)
+5. [Outcome](#outcome)
+6. [Learnings](#learnings)
+7. [Contact](#contact)
 
-    ### create Dockerization create and running command
-    - docker build -t my-node-app .
-    - docker run -p 3000:3000 my-node-app
-   
-    ### Deploye in this docker image into the AWS cloud. the working deployement you should following
-    hif
+---
 
+## <a name="overview"></a>Overview
+
+This project demonstrates:
+
+- **CI/CD Automation**: Automates the build, test, and deployment of a Node.js application on code push.
+- **Dockerization**: Ensures portability and consistency through containerization.
+- **AWS Deployment**: Utilizes a self-hosted GitHub Actions runner on AWS EC2 for hosting the application.
+
+---
+
+## <a name="technologies-used"></a>Technologies Used
+
+- **Node.js**: For building the application.
+- **Docker**: For containerizing the application.
+- **GitHub Actions**: For CI/CD workflow automation.
+- **AWS EC2**: For hosting and deployment.
+- **Self-Hosted Runner**: To execute GitHub Actions workflows on AWS EC2.
+
+---
+
+## <a name="process-summary"></a>Process Summary
+
+1. Created a basic **Node.js application** and containerized it using **Docker**.
+2. Set up a **GitHub Actions workflow** for CI/CD.
+3. Configured an **AWS EC2 instance** as a self-hosted runner.
+4. Automated the **build, test, and deployment** process on every push to the master branch.
+5. Verified successful hosting of the application on the EC2 instance.
+
+---
+
+## <a name="step-by-step-implementation"></a>Step-by-Step Implementation
+
+### <a name="1-nodejs-application-setup"></a>1. Node.js Application Setup
+
+Created a basic `server.js` file
+
+
+
+<a name="2-dockerize-the-application"></a>2. Dockerize the Application
+Created a Dockerfile:
+
+dockerfile
+Copy code
+FROM node:18
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+EXPOSE 3000
+CMD ["node", "server.js"]
+Built and tested the Docker image:
+
+bash
+Copy code
+docker build -t node-app .
+docker run -p 3000:3000 node-app
+
+
+
+
+<a name="3-setup-github-actions-workflow"></a>3. Setup GitHub Actions Workflow
+Added a workflow file .github/workflows/workflow.yml:
+
+yaml
+Copy code
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build and Test
+        run: npm run build && npm test
+
+      - name: Build Docker Image
+        run: docker build -t node-app .
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Deploy Application
+        run: |
+          docker stop node-app || true
+          docker rm node-app || true
+          docker run -d -p 3000:3000 --name node-app node-app
+
+
+<a name="4-configure-aws-ec2-and-runner"></a>4. Configure AWS EC2 and Runner
+Launch EC2 Instance
+Selected Ubuntu 20.04 as the base image.
+Configured security groups to allow ports 22 (SSH) and 3000 (HTTP).
+Install and Configure GitHub Runner
+Downloaded and configured the runner:
+
+bash
+Copy code
+mkdir actions-runner && cd actions-runner
+curl -o actions-runner-linux-x64.tar.gz -L https://github.com/actions/runner/releases/latest/download/actions-runner-linux-x64.tar.gz
+tar xzf ./actions-runner-linux-x64.tar.gz
+./config.sh --url <REPOSITORY_URL> --token <TOKEN>
+./run.sh
+<a name="5-automated-deployment"></a>5. Automated Deployment
+Upon pushing changes to the master branch:
+
+GitHub Actions workflow automatically built and tested the application.
+Docker image was built and deployed to the EC2 instance.
+Verified the application by accessing:
+arduino
+Copy code
+http://<EC2_PUBLIC_IP>:3000
+<a name="outcome"></a>Outcome
+Pipeline Success: Successfully automated the build, test, and deployment process.
+Hosted Application: Application is accessible via the public IP of the EC2 instance.
+<a name="learnings"></a>Learnings
+CI/CD Concepts: Hands-on experience with GitHub Actions for automation.
+Dockerization: Created consistent and portable application environments.
+AWS Deployment: Managed deployment using a self-hosted runner on AWS EC2.
+<a name="contact"></a>Contact
+Have questions or feedback? Feel free to reach out at:
+
+Email: your-email@example.com
