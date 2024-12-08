@@ -1,4 +1,4 @@
-# <ins>CI/CD Pipeline for Node.js Application with Docker, GitHub Actions, and AWS EC2</ins>
+# CI/CD Pipeline for Node.js Application with Docker, GitHub Actions, and AWS EC2
 
 This repository demonstrates the implementation of a **CI/CD pipeline** for a basic **Node.js application**, leveraging **Docker**, **GitHub Actions**, and **AWS EC2**. Below is a comprehensive guide.
 
@@ -23,7 +23,7 @@ This repository demonstrates the implementation of a **CI/CD pipeline** for a ba
 
 ## <a name="overview"></a>Overview
 
-This project demonstrates:
+> This project demonstrates:
 
 - **CI/CD Automation**: Automates the build, test, and deployment of a Node.js application on code push.
 - **Dockerization**: Ensures portability and consistency through containerization.
@@ -55,7 +55,7 @@ This project demonstrates:
 
 ### <a name="1-nodejs-application-setup"></a>1. Node.js Application Setup
 
-Created a basic `server.js` file
+Created a basic `index.js` file
 
 
 ### <a name="2-dockerize-the-application"></a>2. Dockerize the Application
@@ -63,22 +63,26 @@ Created a basic `server.js` file
 Created a Dockerfile:
 
 ```
-dockerfile
-Copy code
-FROM node:18
+FROM node:20
+
 WORKDIR /app
+
 COPY package*.json ./
+
 RUN npm install
+
 COPY . .
+
 EXPOSE 3000
-CMD ["node", "server.js"]
+
+CMD ["node", "index.js"]
 ```
 
 
 Built and tested the Docker image:
 ```
-docker build -t node-app .
-docker run -p 3000:3000 node-app
+docker build -t node-server .
+docker run -p 3000:3000 --name node-server node-server
 ```
 
 
@@ -87,7 +91,7 @@ docker run -p 3000:3000 node-app
 > Added a workflow file .github/workflows/workflow.yml:
 
 ```
-name: CI/CD Pipeline
+name: Docker Build and Run Locally
 
 on:
   push:
@@ -95,44 +99,40 @@ on:
       - master
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  build-and-run:
+    runs-on: self-hosted 
+
     steps:
-      - name: Checkout Code
+      # Step 1: Checkout the code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
+      # Step 2: Build Docker image
+      - name: Build Docker image
+        run: sudo docker build -t node-server .
 
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Build and Test
-        run: npm run build && npm test
-
-      - name: Build Docker Image
-        run: docker build -t node-app .
-
-  deploy:
-    needs: build
-    runs-on: self-hosted
-    steps:
-      - name: Deploy Application
+      # Step 3: Stop and Remove Existing Container
+      - name: Stop Existing Container (if any)
         run: |
-          docker stop node-app || true
-          docker rm node-app || true
-          docker run -d -p 3000:3000 --name node-app node-app
+          sudo docker stop node-server || true
+          sudo docker rm node-server || true
+
+      # Step 4: Run Docker container
+      - name: Run Docker Container
+        run: sudo docker run -d -p 3000:3000 --name node-server node-server
 ```
 
 
 ### <a name="4-configure-aws-ec2-and-runner"></a>4. Configure AWS EC2 and Runner
 
 > Launch EC2 Instance
+
 > Selected Ubuntu 20.04 as the base image.
+
 > Configured security groups to allow ports 22 (SSH) and 3000 (HTTP).
+
 > Install and Configure GitHub Runner
+
 > Downloaded and configured the runner:
 
 
@@ -145,16 +145,22 @@ jobs:
 
 [http://<EC2_PUBLIC_IP>:3000](http://65.0.131.179:3000/server)
 
+---
+
 ## <a name="outcome"></a>Outcome
 
 - **Pipeline Success** : Successfully automated the build, test, and deployment process.
 - **Hosted Application** : Application is accessible via the public IP of the EC2 instance.
+
+---
 
 ## <a name="learnings"></a>Learnings
 
 - **CI/CD Concepts** : Hands-on experience with GitHub Actions for automation.
 - **Dockerization** : Created consistent and portable application environments.
 - **AWS Deployment** : Managed deployment using a self-hosted runner on AWS EC2.
+
+---
 
 ## <a name="contact"></a>Contact
 Have questions or feedback? Feel free to reach out at:
