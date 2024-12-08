@@ -58,10 +58,11 @@ This project demonstrates:
 Created a basic `server.js` file
 
 
+### <a name="2-dockerize-the-application"></a>2. Dockerize the Application
 
-<a name="2-dockerize-the-application"></a>2. Dockerize the Application
 Created a Dockerfile:
 
+```
 dockerfile
 Copy code
 FROM node:18
@@ -71,21 +72,21 @@ RUN npm install
 COPY . .
 EXPOSE 3000
 CMD ["node", "server.js"]
-Built and tested the Docker image:
+```
 
-bash
-Copy code
+
+Built and tested the Docker image:
+```
 docker build -t node-app .
 docker run -p 3000:3000 node-app
+```
 
 
+ ### <a name="3-setup-github-actions-workflow"></a>3. Setup GitHub Actions Workflow
+ 
+> Added a workflow file .github/workflows/workflow.yml:
 
-
-<a name="3-setup-github-actions-workflow"></a>3. Setup GitHub Actions Workflow
-Added a workflow file .github/workflows/workflow.yml:
-
-yaml
-Copy code
+```
 name: CI/CD Pipeline
 
 on:
@@ -123,39 +124,39 @@ jobs:
           docker stop node-app || true
           docker rm node-app || true
           docker run -d -p 3000:3000 --name node-app node-app
+```
 
 
-<a name="4-configure-aws-ec2-and-runner"></a>4. Configure AWS EC2 and Runner
-Launch EC2 Instance
-Selected Ubuntu 20.04 as the base image.
-Configured security groups to allow ports 22 (SSH) and 3000 (HTTP).
-Install and Configure GitHub Runner
-Downloaded and configured the runner:
+### <a name="4-configure-aws-ec2-and-runner"></a>4. Configure AWS EC2 and Runner
 
-bash
-Copy code
-mkdir actions-runner && cd actions-runner
-curl -o actions-runner-linux-x64.tar.gz -L https://github.com/actions/runner/releases/latest/download/actions-runner-linux-x64.tar.gz
-tar xzf ./actions-runner-linux-x64.tar.gz
-./config.sh --url <REPOSITORY_URL> --token <TOKEN>
-./run.sh
-<a name="5-automated-deployment"></a>5. Automated Deployment
-Upon pushing changes to the master branch:
+> Launch EC2 Instance
+> Selected Ubuntu 20.04 as the base image.
+> Configured security groups to allow ports 22 (SSH) and 3000 (HTTP).
+> Install and Configure GitHub Runner
+> Downloaded and configured the runner:
 
-GitHub Actions workflow automatically built and tested the application.
-Docker image was built and deployed to the EC2 instance.
-Verified the application by accessing:
-arduino
-Copy code
-http://<EC2_PUBLIC_IP>:3000
-<a name="outcome"></a>Outcome
-Pipeline Success: Successfully automated the build, test, and deployment process.
-Hosted Application: Application is accessible via the public IP of the EC2 instance.
-<a name="learnings"></a>Learnings
-CI/CD Concepts: Hands-on experience with GitHub Actions for automation.
-Dockerization: Created consistent and portable application environments.
-AWS Deployment: Managed deployment using a self-hosted runner on AWS EC2.
-<a name="contact"></a>Contact
+
+### <a name="5-automated-deployment"></a>5. Automated Deployment
+
+- Upon pushing changes to the master branch:
+- GitHub Actions workflow automatically built and tested the application.
+- Docker image was built and deployed to the EC2 instance.
+- Verified the application by accessing:
+
+[http://<EC2_PUBLIC_IP>:3000](http://65.0.131.179:3000/server)
+
+## <a name="outcome"></a>Outcome
+
+- **Pipeline Success** : Successfully automated the build, test, and deployment process.
+- **Hosted Application** : Application is accessible via the public IP of the EC2 instance.
+
+## <a name="learnings"></a>Learnings
+
+- **CI/CD Concepts** : Hands-on experience with GitHub Actions for automation.
+- **Dockerization** : Created consistent and portable application environments.
+- **AWS Deployment** : Managed deployment using a self-hosted runner on AWS EC2.
+
+## <a name="contact"></a>Contact
 Have questions or feedback? Feel free to reach out at:
 
-Email: your-email@example.com
+Email: hashimmuhammed2001@gmail.com
