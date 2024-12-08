@@ -142,9 +142,9 @@ jobs:
 - GitHub Actions workflow automatically built and tested the application.
 - Docker image was built and deployed to the EC2 instance.
 - Verified the application by accessing:
-
-[http://<EC2_PUBLIC_IP>:3000](http://65.0.131.179:3000/server)
-
+```
+[http://65.0.131.179:3000](http://65.0.131.179:3000/server)
+```
 ---
 
 ## <a name="outcome"></a>Outcome
